@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                contactsModelArrayList=new ArrayList<>();
                 edtsearch.setCursorVisible(true);
                 String text = s.toString();
                 pagedata = 50;
@@ -111,8 +111,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayList getAllSearchedContacts(String text) {
-        Toast.makeText(this, "search", Toast.LENGTH_SHORT).show();
-        String id, tempid = "0", name, email, organization, image, other, mobilenumber;
         ArrayList<String> nameList = new ArrayList<>();
         contactsModelArrayList = new ArrayList<>();
 
@@ -124,13 +122,40 @@ public class MainActivity extends AppCompatActivity {
         q1.whereStartsWith(Contact.Field.DisplayName, text);
         Query q2 = Contacts.getQuery();
         q2.whereStartsWith(Contact.Field.PhoneNormalizedNumber, text);
+        Query q3 = Contacts.getQuery();
+        q3.whereStartsWith(Contact.Field.Email, text);
         List<Query> qs = new ArrayList<>();
         qs.add(q1);
         qs.add(q2);
+        qs.add(q3);
         mainQuery.or(qs);
         List<Contact> contacts = mainQuery.find();
-        Log.d("safiyas searched libr", contacts.toString());
+        for (int i = 0; i < contacts.size(); i++) {
+            try {
+                ContactsModel contactsModel = new ContactsModel();
+                Contact contact = contacts.get(i);
+                contactsModel.setName(contact.getDisplayName());
+                if (contact.getPhoneNumbers().size() > 0) {
+                    contactsModel.setNumber(contact.getPhoneNumbers().get(0).getNumber());
+                }
+                if (contact.getEmails().size() > 0) {
+                    contactsModel.setEmail(contact.getEmails().get(0).getAddress());
+                }
+                contactsModel.setOrganization(contact.getCompanyName());
+                contactsModel.setImage(contact.getPhotoUri());
+                contactsModel.setId(contact.getId().toString());
+                contactsModel.setOther(contact.getNote());
+                contactsModelArrayList.add(contactsModel);
+            } catch (Exception e) {
 
+                e.printStackTrace();
+                continue;
+            }
+
+        }
+
+
+        //******************* Raw Code to search contacts*****************
 //        ContentResolver cr = getContentResolver();
 //        String whereString = "display_name LIKE ? ";
 //        String[] whereParams = new String[]{"%" + text + "%"};
@@ -191,20 +216,12 @@ public class MainActivity extends AppCompatActivity {
 //            cur.close();
 //        }
 //
-//        contactsAdapter = new ContactsAdapter(this, contactsModelArrayList) {
-//            @Override
-//            public void load() {
-////                limit = pagedata;
-////                pagedata += 50;
-////                if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.READ_CONTACTS)
-////                        == PackageManager.PERMISSION_GRANTED) {
-////                    mobileArray = getAllSearchedContacts(text);
-////                } else {
-////                    requestPermission();
-////                }
-//            }
-//        };
-//        recyclercontacts.setAdapter(contactsAdapter);
+        contactsAdapter = new ContactsAdapter(this, contactsModelArrayList) {
+            @Override
+            public void load() {
+            }
+        };
+        recyclercontacts.setAdapter(contactsAdapter);
 
         return nameList;
     }
