@@ -21,8 +21,7 @@
             android:layout_marginTop="@dimen/_minus50sdp"
             android:src="@drawable/message"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
@@ -73,11 +72,7 @@
                 android:focusableInTouchMode="true"
                 android:gravity="center|start"
                 android:hint="Search Contact"
-                android:imeActionLabel="Next"
-                android:imeOptions="actionNext"
-                android:inputType="number"
-                android:maxLength="10"
-                android:textColor="@color/greylight"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_15sdp"
                 app:layout_constraintStart_toEndOf="@+id/tvMobile"
                 app:layout_constraintTop_toTopOf="parent" />

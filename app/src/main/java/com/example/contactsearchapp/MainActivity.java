@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                contactsModelArrayList=new ArrayList<>();
+                contactsModelArrayList = new ArrayList<>();
                 edtsearch.setCursorVisible(true);
                 String text = s.toString();
                 pagedata = 50;
@@ -119,15 +119,25 @@ public class MainActivity extends AppCompatActivity {
                 this, RecyclerView.VERTICAL, false));
         Query mainQuery = Contacts.getQuery();
         Query q1 = Contacts.getQuery();
-        q1.whereStartsWith(Contact.Field.DisplayName, text);
+        q1.whereContains(Contact.Field.DisplayName, text);
         Query q2 = Contacts.getQuery();
-        q2.whereStartsWith(Contact.Field.PhoneNormalizedNumber, text);
+        q2.whereContains(Contact.Field.PhoneNormalizedNumber, text);
         Query q3 = Contacts.getQuery();
-        q3.whereStartsWith(Contact.Field.Email, text);
+        q3.whereContains(Contact.Field.Email, text);
+        Query q4 = Contacts.getQuery();
+        q4.whereContains(Contact.Field.Note, text);
+        Query q5 = Contacts.getQuery();
+        q5.whereContains(Contact.Field.CompanyName, text);
+        Query q6 = Contacts.getQuery();
+        q6.whereContains(Contact.Field.Address, text);
         List<Query> qs = new ArrayList<>();
         qs.add(q1);
         qs.add(q2);
         qs.add(q3);
+        qs.add(q4);
+        qs.add(q5);
+        qs.add(q6);
+
         mainQuery.or(qs);
         List<Contact> contacts = mainQuery.find();
         for (int i = 0; i < contacts.size(); i++) {
